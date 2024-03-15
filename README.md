@@ -1,8 +1,28 @@
-# React + Vite
+# Banco Universitario App (FrontEnd)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Descripcion
 
-Currently, two official plugins are available:
+FrontEnd para la banca en linea del Banco Universitario.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Autores:
+- Dorieliz Guerrero
+- Elias Escalona
+- Jose Sayago
+
+Profesor: Jorge Chiquin
+
+Materia: Laboratorio 2. \
+Carrera: Ing. En Informatica.\
+Universidad Centroccidental "Lisandro Alvarado".
+
+Para correr el proyecto en dev ejecutar:
+
+~~~
+npm run dev
+~~~
+
+Para crear el build del proyecto ejecutar:
+
+~~~
+npm run build
+~~~

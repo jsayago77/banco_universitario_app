@@ -1,42 +1,94 @@
+@font-face {
+  font-family: 'monserrat';
+  src: url('./assets/montserrat_alternates_regular.ttf');
+}
+
+html, body {
+  font-family: 'monserrat' !important;
+  margin: 0;
+  height: 100%;
+
+  background: linear-gradient(to bottom, #ffffff 7%, #085F63 50%);
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  height: 100% !important;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.sign-background {
+  height: 100% !important;
+  
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+.sign-logo{
+  margin: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  img {
+    display: block;
+    width: 40%;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+.card-custom {
+  width: 50% !important;
+}
+
+.signin {
+  
+}
+
+.signup {
+  width: 75% !important;
+}
+
+.sign-card-header {
+  background-color: #085F63 !important;
+  color: #ffffff !important;
+  padding: .8em 2em !important;
+}
+
+.sign-register-btn {
+  justify-content: center;
+  padding: 1em 0;
+
+  button {
+    background-color: #085F63 !important;
+    padding: .7em 2.3em;
+    border-radius: 14em;
+    width: fit-content;
   }
 }
 
-.card {
-  padding: 2em;
+.sign-has-account {
+  justify-content: center;
+  
+  p {
+    width: fit-content;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+@media (max-width: 768px) {
+  .sign-logo img {
+    width: 65%;
+  }
+
+  .card-custom {
+    width: 75% !important;
+  }
+
+  .signup {
+    width: 90% !important;
+  }
+}
+
+@media (max-width: 362px) {
+
+  .sign-logo img {
+    width: 70%;
+  }
+  .card-custom {
+    width: 90% !important;
+  }
 }
