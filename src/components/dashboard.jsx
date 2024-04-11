@@ -75,7 +75,19 @@ function Dashboard() {
         }).then( data => {
             const updatedUser = { ...userData, movements: data.data};
             setUserContext(updatedUser);
-            console.log(userData.movements)
+        } )
+
+        getApiData({
+            type: 'getClients',
+            method: 'GET',
+            args: {
+                page: 1,
+                page_size: 20
+            }
+        }).then( data => {
+            const updatedUser = { ...userData, clients: data.data};
+            setUserContext(updatedUser);
+            
         } )
 
     }, []);
@@ -185,7 +197,7 @@ function Dashboard() {
                     </Col>
                     <Col>
                         <Row>Contactos</Row>
-                        <Row className='fs-3'>0</Row>
+                        <Row className='fs-3'>{ userData.clients.length }</Row>
                     </Col>
                 </Col>
                 <Col className='d-flex'>
@@ -194,7 +206,7 @@ function Dashboard() {
                     </Col>
                     <Col>
                         <Row>Transferencias</Row>
-                        <Row className='fs-3'>0</Row>
+                        <Row className='fs-3'>{ userData.movements.length }</Row>
                     </Col>
 
                 </Col>
