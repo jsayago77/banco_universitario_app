@@ -17,7 +17,8 @@ import {
 } from 'chart.js';
 import {
     Row,
-    Col
+    Col,
+    Button
 } from 'reactstrap';
 import { UserContext } from '../providers/userContext';
 import { useContext, useEffect, useState } from 'react';
@@ -25,62 +26,69 @@ import { getApiData } from '../providers/bankApiProvider';
 
 function Dashboard() {
 
-    const key = 'Compact Table';
-
     const { userData, setUserContext } = useContext(UserContext);
     const [transferencias, setTransferencias] = useState([]);
     const [contactos, setContactos] = useState([]);
     const [balance, setBalance] = useState(0);
+    const [dataTable, setDataTable] = useState({
+        nodes: [],
+        totalPages: 0,
+    });
+
+    const INITIAL_PARAMS = {
+        page: 1,
+        page_size: 10
+    };
 
     function getCreditsDebits(movimientos) {
         const credits = new Array(12).fill(0);
         const debits = new Array(12).fill(0);
-        
-        if( !movimientos ) return {
+
+        if (!movimientos) return {
             credits,
             debits
         };
-        
-        movimientos.forEach(movimiento => {
-          const fecha = new Date(movimiento.created_at);
-          const mes = fecha.getMonth(); // Obtiene el mes (0 para enero, 1 para febrero, etc.)
-          const cantidad = movimiento.amount;
 
-          if (movimiento.multiplier === 1) {
-            credits[mes] += cantidad;
-          } else if (movimiento.multiplier === -1) {
-            debits[mes] += cantidad;
-          }
+        movimientos.forEach(movimiento => {
+            const fecha = new Date(movimiento.created_at);
+            const mes = fecha.getMonth(); // Obtiene el mes (0 para enero, 1 para febrero, etc.)
+            const cantidad = movimiento.amount;
+
+            if (movimiento.multiplier === 1) {
+                credits[mes] += cantidad;
+            } else if (movimiento.multiplier === -1) {
+                debits[mes] += cantidad;
+            }
         });
-      
+
         return {
-          credits,
-          debits
+            credits,
+            debits
         };
-      }
+    }
 
     useEffect(() => {
         getApiData({
             type: 'getBalance',
             method: 'GET',
-        }).then( data => {
-            const updatedUser = { ...userData, balance: data.data.balance};
+        }).then(data => {
+            const updatedUser = { ...userData, balance: data.data.balance };
             setUserContext(updatedUser);
             setBalance(data.data.balance)
-        } )
+        })
 
         getApiData({
             type: 'getMovements',
             method: 'GET',
             args: {
-                page: 1,
-                page_size: 20
             }
-        }).then( data => {
-            const updatedUser = { ...userData, movements: data.data};
+        }).then(data => {
+            const updatedUser = { ...userData, movements: data.data };
             setUserContext(updatedUser);
             setTransferencias(data.data);
-        } )
+
+            setDataTable({ totalPages: (data.data.length / INITIAL_PARAMS.page_size), nodes: data.data.slice(0, 10) })
+        })
 
         getApiData({
             type: 'getClients',
@@ -89,34 +97,39 @@ function Dashboard() {
                 page: 1,
                 page_size: 20
             }
-        }).then( data => {
-            const updatedUser = { ...userData, clients: data.data};
+        }).then(data => {
+            const updatedUser = { ...userData, clients: data.data };
             setUserContext(updatedUser);
             setContactos(data.data);
-            
-        } )
+
+        })
 
     }, []);
 
-    const nodes = transferencias;
-
-    const dataTable = { nodes }
-
     const pagination = usePagination(dataTable, {
         state: {
-            page: 0,
-            size: 2,
+            page: INITIAL_PARAMS.page,
+            size: INITIAL_PARAMS.page_size,
         },
         onChange: onPaginationChange,
+    }, {
+        isServer: true,
     });
 
     function onPaginationChange(action, state) {
-        console.log(action, state);
+        getApiData({
+            type: 'getMovements',
+            method: 'GET',
+            args: {
+                page: state.page + 1,
+                page_size: INITIAL_PARAMS.page_size
+            }
+        }).then(data => {
+            setDataTable({ ...dataTable, nodes: data.data })
+        })
     }
 
- 
     const theme = useTheme(getTheme());
-
     const COLUMNS = [
         {
             label: 'Cuenta',
@@ -163,7 +176,6 @@ function Dashboard() {
     const labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
     const table_data = getCreditsDebits(transferencias);
 
-    console.log(table_data)
     const data = {
         labels,
         datasets: [
@@ -194,7 +206,7 @@ function Dashboard() {
                     </Col>
                     <Col>
                         <Row>Saldo actual</Row>
-                        <Row className='fs-3'>{ balance }</Row>
+                        <Row className='fs-3'>{balance}</Row>
                     </Col>
                 </Col>
                 <Col className='d-flex'>
@@ -203,7 +215,7 @@ function Dashboard() {
                     </Col>
                     <Col>
                         <Row>Contactos</Row>
-                        <Row className='fs-3'>{ contactos.length }</Row>
+                        <Row className='fs-3'>{contactos.length}</Row>
                     </Col>
                 </Col>
                 <Col className='d-flex'>
@@ -212,7 +224,7 @@ function Dashboard() {
                     </Col>
                     <Col>
                         <Row>Transferencias</Row>
-                        <Row className='fs-3'>{ transferencias.length }</Row>
+                        <Row className='fs-3'>{transferencias.length}</Row>
                     </Col>
 
                 </Col>
@@ -223,15 +235,16 @@ function Dashboard() {
             </Row>
             <Row className='app-section'>
                 <Row><h4>Últimas Transferencias</h4></Row>
-                <CompactTable columns={COLUMNS} data={dataTable} theme={theme} />
+                <CompactTable columns={COLUMNS} data={dataTable} theme={theme} pagination={pagination} />
                 <br />
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span>Total Pages: {pagination.state.getTotalPages(dataTable.nodes)}</span>
+                    <span>Total Pages: {dataTable.totalPages}</span>
 
                     <span>
                         Page:{" "}
-                        {pagination.state.getPages(dataTable.nodes).map((_, index) => (
-                            <button
+                        {Array(dataTable.totalPages).fill().map((_, index) => (
+                            <Button
+                                className='m-1'
                                 key={index}
                                 type="button"
                                 style={{
@@ -240,7 +253,7 @@ function Dashboard() {
                                 onClick={() => pagination.fns.onSetPage(index)}
                             >
                                 {index + 1}
-                            </button>
+                            </Button>
                         ))}
                     </span>
                 </div>
