@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
     Row,
     Col,
@@ -12,8 +11,43 @@ import {
     Input,
     Button
 } from 'reactstrap';
+import { getApiData } from '../providers/bankApiProvider';
+import { UserContext } from '../providers/userContext';
+import { useState, useContext } from 'react';
 
 function SignUp() {
+
+    const [user, setUser] = useState({
+        first_name: '',
+        last_name: '',
+        document_number: '',
+        birth_date: '',
+        phone_number: '',
+        email: '',
+        password: ''
+    });
+
+    const { userData, setUserContext } = useContext(UserContext);
+    const navigate = useNavigate();
+
+    function register(){
+        user.birth_date = new Date(user.birth_date)
+        getApiData({
+            type: 'signUp',
+            method: 'POST',
+            args: user
+        }).then( data => {
+            sessionStorage.setItem('bankApiToken', data.data.jwt);
+
+            const updatedUser = { ...userData, display_name: data.data.first_name + " " + data.data.last_name };
+            setUserContext(updatedUser);
+
+            navigate("/");
+
+        } )
+
+    }
+
     return (
         <Card className='mb-5 p-0 rounded-4 card-custom signup'>
             <CardHeader className='sign-card-header rounded-4 rounded-bottom-0'>
@@ -35,6 +69,8 @@ function SignUp() {
                                             name="user_first_name"
                                             placeholder="Nombre"
                                             type="text"
+                                            onChange={ (e) => setUser({ ...user, first_name: e.target.value }) }
+                                            value={user.first_name}
                                         />
                                     </FormGroup>
                                 </Col>
@@ -49,6 +85,8 @@ function SignUp() {
                                             name="user_last_name"
                                             placeholder="Apellido"
                                             type="text"
+                                            onChange={ (e) => setUser({ ...user, last_name: e.target.value }) }
+                                            value={user.last_name}
                                         />
                                     </FormGroup>
                                 </Col>
@@ -64,6 +102,8 @@ function SignUp() {
                                         name="user_identity_card"
                                         placeholder="00.000.000"
                                         type="text"
+                                        onChange={ (e) => setUser({ ...user, document_number: e.target.value }) }
+                                        value={user.document_number}
                                     />
                                 </FormGroup>
                             </Row>
@@ -78,6 +118,8 @@ function SignUp() {
                                         name="user_birth_date"
                                         placeholder="mm/dd/yyyy"
                                         type="date"
+                                        onChange={ (e) => setUser({ ...user, birth_date: e.target.value }) }
+                                        value={user.birth_date}
                                     />
                                 </FormGroup>
                             </Row>
@@ -92,6 +134,8 @@ function SignUp() {
                                         name="user_phone_number"
                                         placeholder="0000-000-0000"
                                         type="number"
+                                        onChange={ (e) => setUser({ ...user, phone_number: e.target.value }) }
+                                        value={user.phone_number}
                                     />
                                 </FormGroup>
                             </Row>
@@ -108,6 +152,8 @@ function SignUp() {
                                         name="user_email"
                                         placeholder="example@mail.com"
                                         type="email"
+                                        onChange={ (e) => setUser({ ...user, email: e.target.value }) }
+                                        value={user.email}
                                     />
                                 </FormGroup>
                             </Row>
@@ -122,6 +168,8 @@ function SignUp() {
                                         name="user_password"
                                         placeholder=""
                                         type="password"
+                                        onChange={ (e) => setUser({ ...user, password: e.target.value }) }
+                                        value={user.password}
                                     />
                                 </FormGroup>
                             </Row>
@@ -142,11 +190,11 @@ function SignUp() {
                         </Col>
                     </Row>
                     <Row className='sign-register-btn'>
-                        <Button>Entrar</Button>
+                        <Button onClick={ register }>Entrar</Button>
                     </Row>
                     <Row className='sign-has-account'>
                         <p>
-                            ¿Ya tienes cuenta? <Link to='/login'>Iniciar Sesión</Link>
+                            ¿Ya tienes cuenta? <Link to='/enter/login'>Iniciar Sesión</Link>
                         </p>
                     </Row>
                 </Form>
