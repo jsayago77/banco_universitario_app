@@ -28,6 +28,9 @@ function Dashboard() {
     const key = 'Compact Table';
 
     const { userData, setUserContext } = useContext(UserContext);
+    const [transferencias, setTransferencias] = useState([]);
+    const [contactos, setContactos] = useState([]);
+    const [balance, setBalance] = useState(0);
 
     function getCreditsDebits(movimientos) {
         const credits = new Array(12).fill(0);
@@ -63,6 +66,7 @@ function Dashboard() {
         }).then( data => {
             const updatedUser = { ...userData, balance: data.data.balance};
             setUserContext(updatedUser);
+            setBalance(data.data.balance)
         } )
 
         getApiData({
@@ -75,6 +79,7 @@ function Dashboard() {
         }).then( data => {
             const updatedUser = { ...userData, movements: data.data};
             setUserContext(updatedUser);
+            setTransferencias(data.data);
         } )
 
         getApiData({
@@ -87,12 +92,13 @@ function Dashboard() {
         }).then( data => {
             const updatedUser = { ...userData, clients: data.data};
             setUserContext(updatedUser);
+            setContactos(data.data);
             
         } )
 
     }, []);
 
-    const nodes = userData.movements ? userData.movements : [];
+    const nodes = transferencias;
 
     const dataTable = { nodes }
 
@@ -155,7 +161,7 @@ function Dashboard() {
     };
 
     const labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-    const table_data = getCreditsDebits(userData.movements);
+    const table_data = getCreditsDebits(transferencias);
 
     console.log(table_data)
     const data = {
@@ -188,7 +194,7 @@ function Dashboard() {
                     </Col>
                     <Col>
                         <Row>Saldo actual</Row>
-                        <Row className='fs-3'>{ userData.balance }</Row>
+                        <Row className='fs-3'>{ balance }</Row>
                     </Col>
                 </Col>
                 <Col className='d-flex'>
@@ -197,7 +203,7 @@ function Dashboard() {
                     </Col>
                     <Col>
                         <Row>Contactos</Row>
-                        <Row className='fs-3'>{ userData.clients.length }</Row>
+                        <Row className='fs-3'>{ contactos.length }</Row>
                     </Col>
                 </Col>
                 <Col className='d-flex'>
@@ -206,7 +212,7 @@ function Dashboard() {
                     </Col>
                     <Col>
                         <Row>Transferencias</Row>
-                        <Row className='fs-3'>{ userData.movements.length }</Row>
+                        <Row className='fs-3'>{ transferencias.length }</Row>
                     </Col>
 
                 </Col>
