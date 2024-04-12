@@ -75,6 +75,7 @@ function Dashboard() {
             const updatedUser = { ...userData, balance: data.data.balance };
             setUserContext(updatedUser);
             setBalance(data.data.balance)
+            
         })
 
         getApiData({
@@ -101,7 +102,7 @@ function Dashboard() {
             const updatedUser = { ...userData, clients: data.data };
             setUserContext(updatedUser);
             setContactos(data.data);
-
+            console.log(data.data)
         })
 
     }, []);
@@ -147,10 +148,10 @@ function Dashboard() {
             label: 'Monto',
             renderCell: (item) => item.amount,
         },
-        {
-            label: 'Opciones',
-            renderCell: (item) => item.options,
-        },
+        // {
+        //     label: 'Opciones',
+        //     renderCell: (item) => item.options,
+        // },
     ];
 
     ChartJS.register(
@@ -238,17 +239,19 @@ function Dashboard() {
                 <CompactTable columns={COLUMNS} data={dataTable} theme={theme} pagination={pagination} />
                 <br />
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span>Total Pages: {dataTable.totalPages}</span>
+                    <span>Mostrando { pagination.state.page + 1 }0 de {transferencias.length} transferencias </span>
 
                     <span>
-                        Page:{" "}
+                        Paginas:{" "}
                         {Array(dataTable.totalPages).fill().map((_, index) => (
                             <Button
-                                className='m-1'
+                                className='m-1 rounded-circle border-0'
                                 key={index}
                                 type="button"
                                 style={{
                                     fontWeight: pagination.state.page === index ? "bold" : "normal",
+                                    backgroundColor: pagination.state.page === index ? "#49BEB7" : "#ffffff",
+                                    color: pagination.state.page === index ? "#ffffff" : "#A098AE",
                                 }}
                                 onClick={() => pagination.fns.onSetPage(index)}
                             >

@@ -11,7 +11,7 @@ function Header({ pageName, user }) {
             <Col>
                 <h2>{pageName}</h2>
             </Col>
-            <Col xs='1'>
+            <Col xs='2'>
                 <Row>
                     <Col>
                         <span className='align-top text-start'>{user.name}</span>

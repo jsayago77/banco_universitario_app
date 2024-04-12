@@ -13,6 +13,7 @@ import {
 import { getApiData } from '../providers/bankApiProvider';
 import { useState, useContext } from 'react';
 import { UserContext } from '../providers/userContext';
+import InfoModal from './infoModal';
 
 function SignIn() {
     const [user, setUser] = useState({
@@ -21,6 +22,12 @@ function SignIn() {
     });
 
     const { userData, setUserContext } = useContext(UserContext);
+    const [errorMsg, setErrorMsg] = useState({
+        title: '',
+        body: '',
+        color: '',
+        isActive: false
+    });
     const navigate = useNavigate();
 
     function login() {
@@ -30,13 +37,21 @@ function SignIn() {
             method: 'POST',
             args: user
         }).then( data => {
-            sessionStorage.setItem('bankApiToken', data.data.jwt);
+            if(data.data === null){
+                // setErrorMsg({ title: "Error en los campos", body: data.message, color: '#dc3545', isActive: true });
 
-            const updatedUser = { ...userData, display_name: data.data.first_name + " " + data.data.last_name };
-            setUserContext(updatedUser);
+            } else {
+                sessionStorage.setItem('bankApiToken', data.data.jwt);
 
-            navigate("/");
-        } )
+                const updatedUser = { ...userData, display_name: data.data.first_name + " " + data.data.last_name };
+                setUserContext(updatedUser);
+    
+                navigate("/");
+            }
+            
+        }).catch(error => {
+            console.error(error);
+        });
     }
 
     return (
@@ -59,6 +74,7 @@ function SignIn() {
                                 type="email"
                                 onChange={(e) => setUser({ ...user, email: e.target.value })}
                                 value={user.email}
+                                invalid={ (user.email == '') ? true : false }
                             />
                         </FormGroup>
                         <FormGroup>
@@ -73,6 +89,7 @@ function SignIn() {
                                 type="password"
                                 onChange={(e) => setUser({ ...user, password: e.target.value })}
                                 value={user.password}
+                                invalid={ (user.password == '') ? true : false }
                             />
                         </FormGroup>
                     </Row>
@@ -86,6 +103,7 @@ function SignIn() {
                     </Row>
                 </Form>
             </CardBody>
+            {/* <InfoModal title={errorMsg.title} body={errorMsg.body} color={errorMsg.color} isActive={errorMsg.isActive} /> */}
         </Card>
     )
 }

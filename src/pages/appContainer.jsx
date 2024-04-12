@@ -44,6 +44,11 @@ function AppContainer() {
         };
     }, []);
 
+    function logout() {
+        sessionStorage.removeItem('bankApiToken');
+        navigate("/enter/login");
+    }
+
     return (
         <Container fluid className=''>
             <Row>
@@ -76,7 +81,7 @@ function AppContainer() {
                         </Nav>
                     </Row>
                     <Row className='text-white'>
-                        <Button className='app-logout'><FontAwesomeIcon icon={faArrowLeftLong} /> Salir</Button>
+                        <Button className='app-logout' onClick={ logout }><FontAwesomeIcon icon={faArrowLeftLong} /> Salir</Button>
                         <p className='app-copyright'>@2024 Banco Universitario</p>
                     </Row>
                 </Col>

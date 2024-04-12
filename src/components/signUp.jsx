@@ -27,11 +27,14 @@ function SignUp() {
         password: ''
     });
 
+    const [otherPass, setOtherPass] = useState('');
+
     const { userData, setUserContext } = useContext(UserContext);
     const navigate = useNavigate();
 
     function register(){
         user.birth_date = new Date(user.birth_date)
+
         getApiData({
             type: 'signUp',
             method: 'POST',
@@ -71,6 +74,7 @@ function SignUp() {
                                             type="text"
                                             onChange={ (e) => setUser({ ...user, first_name: e.target.value }) }
                                             value={user.first_name}
+                                            invalid={ (user.first_name == '') ? true : false }
                                         />
                                     </FormGroup>
                                 </Col>
@@ -87,6 +91,7 @@ function SignUp() {
                                             type="text"
                                             onChange={ (e) => setUser({ ...user, last_name: e.target.value }) }
                                             value={user.last_name}
+                                            invalid={ (user.last_name == '') ? true : false }
                                         />
                                     </FormGroup>
                                 </Col>
@@ -104,6 +109,7 @@ function SignUp() {
                                         type="text"
                                         onChange={ (e) => setUser({ ...user, document_number: e.target.value }) }
                                         value={user.document_number}
+                                        invalid={ (user.document_number == '') ? true : false }
                                     />
                                 </FormGroup>
                             </Row>
@@ -120,6 +126,7 @@ function SignUp() {
                                         type="date"
                                         onChange={ (e) => setUser({ ...user, birth_date: e.target.value }) }
                                         value={user.birth_date}
+                                        invalid={ (user.birth_date == '') ? true : false }
                                     />
                                 </FormGroup>
                             </Row>
@@ -136,6 +143,7 @@ function SignUp() {
                                         type="number"
                                         onChange={ (e) => setUser({ ...user, phone_number: e.target.value }) }
                                         value={user.phone_number}
+                                        invalid={ (user.phone_number == '') ? true : false }
                                     />
                                 </FormGroup>
                             </Row>
@@ -154,6 +162,7 @@ function SignUp() {
                                         type="email"
                                         onChange={ (e) => setUser({ ...user, email: e.target.value }) }
                                         value={user.email}
+                                        invalid={ (user.email == '') ? true : false }
                                     />
                                 </FormGroup>
                             </Row>
@@ -170,6 +179,7 @@ function SignUp() {
                                         type="password"
                                         onChange={ (e) => setUser({ ...user, password: e.target.value }) }
                                         value={user.password}
+                                        invalid={ (user.password == '') ? true : false }
                                     />
                                 </FormGroup>
                             </Row>
@@ -184,6 +194,9 @@ function SignUp() {
                                         name="user_password_retype"
                                         placeholder=""
                                         type="password"
+                                        value={otherPass}
+                                        onChange={ (e) => setOtherPass( e.target.value ) }
+                                        invalid={ (user.password !== otherPass) ? true : false }
                                     />
                                 </FormGroup>
                             </Row>
