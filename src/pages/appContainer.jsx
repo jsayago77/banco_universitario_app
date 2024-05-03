@@ -1,4 +1,4 @@
-import { useNavigate, Outlet } from 'react-router-dom'
+import { useNavigate, Outlet, NavLink } from 'react-router-dom'
 import logo from '../assets/logo-no-background.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
@@ -13,7 +13,6 @@ import {
     Col,
     Nav,
     NavItem,
-    NavLink,
     Button
 } from 'reactstrap';
 
@@ -35,7 +34,8 @@ function AppContainer() {
         getApiData({
             type: 'getUser',
             method: 'GET',
-        }).then( data => {
+        }).then(response => response.json())
+        .then( data => {
             const updatedUser = { ...userData, display_name: data.data.first_name + " " + data.data.last_name };
             setUserContext(updatedUser);
         } )
@@ -59,22 +59,22 @@ function AppContainer() {
                     <Row className='py-2 ps-4 flex-fill'>
                         <Nav vertical pills className='app-navitems'>
                             <NavItem>
-                                <NavLink active href="#">
+                                <NavLink className={'nav-link'} active to="/">
                                     <FontAwesomeIcon icon={faHouse} /> Inicio
                                 </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink href="#">
+                                <NavLink className={'nav-link'} to="movements">
                                     <FontAwesomeIcon icon={faMoneyBillTransfer} /> Transferencias
                                 </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink href="#">
+                                <NavLink className={'nav-link'} to="contacts">
                                     <FontAwesomeIcon icon={faUserTie} /> Contactos
                                 </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink href="#">
+                                <NavLink className={'nav-link'} to="profile">
                                     <FontAwesomeIcon icon={faUser} />    Perfil
                                 </NavLink>
                             </NavItem>

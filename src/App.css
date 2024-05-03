@@ -181,5 +181,13 @@ html, body {
 .bg-orange {
   background-color: #fb7d5b;
 }
-
 /* AppContainer */
+
+.app-btn {
+  background-color: #085F63 !important;
+  border-radius: 3em !important;
+  padding: .7em 0 !important;
+  width: 20% !important;
+  border: 0 !important;
+  color: #ffffff !important;
+}

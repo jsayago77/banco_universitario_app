@@ -78,7 +78,7 @@ export const getApiData = (action) => {
 
     //return makeConsulta(endpoints[action.type], bankApiConn, action.method, action.args);
     return fetch(url, option)
-        .then(response => response.json())
+        .then(response => response)
         .catch(error => {
             console.error(error);
         });

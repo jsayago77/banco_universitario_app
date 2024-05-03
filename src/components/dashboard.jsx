@@ -27,6 +27,7 @@ import { getApiData } from '../providers/bankApiProvider';
 function Dashboard() {
 
     const { userData, setUserContext } = useContext(UserContext);
+    const [movData, SetMovData] = useState({});
     const [transferencias, setTransferencias] = useState([]);
     const [contactos, setContactos] = useState([]);
     const [balance, setBalance] = useState(0);
@@ -71,7 +72,9 @@ function Dashboard() {
         getApiData({
             type: 'getBalance',
             method: 'GET',
-        }).then(data => {
+        }).then(response => response.json())
+        .then(data => {
+
             const updatedUser = { ...userData, balance: data.data.balance };
             setUserContext(updatedUser);
             setBalance(data.data.balance)
@@ -83,12 +86,20 @@ function Dashboard() {
             method: 'GET',
             args: {
             }
-        }).then(data => {
+        }).then(response => {
+            SetMovData({
+                totalPages: response.headers.get('X-Pagination-Page-Count'),
+                totalMovements: response.headers.get('X-Pagination-Total-Count')
+            })
+            return response.json();
+        })
+        .then(data => {
+            console.log(movData)
+            console.log(data)
             const updatedUser = { ...userData, movements: data.data };
             setUserContext(updatedUser);
             setTransferencias(data.data);
-
-            setDataTable({ totalPages: (data.data.length / INITIAL_PARAMS.page_size), nodes: data.data.slice(0, 10) })
+            setDataTable({ totalPages: movData.totalPages, nodes: data.data.slice(0, 10) })
         })
 
         getApiData({
@@ -98,11 +109,11 @@ function Dashboard() {
                 page: 1,
                 page_size: 20
             }
-        }).then(data => {
+        }).then(response => response.json())
+        .then(data => {
             const updatedUser = { ...userData, clients: data.data };
             setUserContext(updatedUser);
             setContactos(data.data);
-            console.log(data.data)
         })
 
     }, []);
@@ -125,7 +136,8 @@ function Dashboard() {
                 page: state.page + 1,
                 page_size: INITIAL_PARAMS.page_size
             }
-        }).then(data => {
+        }).then(response => response.json())
+        .then(data => {
             setDataTable({ ...dataTable, nodes: data.data })
         })
     }
@@ -239,7 +251,7 @@ function Dashboard() {
                 <CompactTable columns={COLUMNS} data={dataTable} theme={theme} pagination={pagination} />
                 <br />
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span>Mostrando { pagination.state.page + 1 }0 de {transferencias.length} transferencias </span>
+                    <span>Mostrando { pagination.state.page } de {movData.totalMovements} transferencias </span>
 
                     <span>
                         Paginas:{" "}

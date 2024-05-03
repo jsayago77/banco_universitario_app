@@ -36,7 +36,8 @@ function SignIn() {
             type: 'signIn',
             method: 'POST',
             args: user
-        }).then( data => {
+        }).then(response => response.json())
+        .then( data => {
             if(data.data === null){
                 // setErrorMsg({ title: "Error en los campos", body: data.message, color: '#dc3545', isActive: true });
 

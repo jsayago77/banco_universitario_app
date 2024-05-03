@@ -39,7 +39,8 @@ function SignUp() {
             type: 'signUp',
             method: 'POST',
             args: user
-        }).then( data => {
+        }).then(response => response.json())
+        .then( data => {
             sessionStorage.setItem('bankApiToken', data.data.jwt);
 
             const updatedUser = { ...userData, display_name: data.data.first_name + " " + data.data.last_name };

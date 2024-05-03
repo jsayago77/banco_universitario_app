@@ -1,11 +1,12 @@
 import { createHashRouter, RouterProvider, Navigate } from "react-router-dom"
 import { Routes, Route, HashRouter } from "react-router-dom";
-
-import SignIn from "../components/signIn"
-import SignUp from "../components/signUp"
-import AppContainer from "../pages/appContainer"
-import Dashboard from "../components/dashboard"
-import Sign from "../pages/sign"
+import SignIn from "../components/signIn";
+import SignUp from "../components/signUp";
+import AppContainer from "../pages/appContainer";
+import Dashboard from "../components/dashboard";
+import Movements from "../components/movements";
+import NewMovement from "../components/newMovement";
+import Sign from "../pages/sign";
 import AppSection from "../components/appSection";
 
 const main_route = createHashRouter([
@@ -16,6 +17,10 @@ const main_route = createHashRouter([
             {
                 path: "dashboard",
                 element: <Dashboard />,
+            },
+            {
+                path: "movements",
+                element: <Movements />,
             },
         ],
     },
@@ -41,6 +46,8 @@ export default function Routers() {
             <Routes>
                 <Route path="/" element={<AppContainer />} >
                     <Route index element={<Dashboard />} />
+                    <Route path="movements" element={<Movements />} />
+                    <Route path="new-movement" element={<NewMovement />} />
                 </Route>
                 <Route path="/enter" element={<Sign />} >
                     <Route path="login" element={<SignIn />} />
