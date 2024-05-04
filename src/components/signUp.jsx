@@ -14,8 +14,18 @@ import {
 import { getApiData } from '../providers/bankApiProvider';
 import { UserContext } from '../providers/userContext';
 import { useState, useContext } from 'react';
+import InfoModal from './infoModal';
 
 function SignUp() {
+
+    const [modal, setModal] = useState(false);
+    const toggle = () => setModal(!modal);
+    const [errorMsg, setErrorMsg] = useState({
+        title: '',
+        body: '',
+        color: '',
+        isActive: false
+    });
 
     const [user, setUser] = useState({
         first_name: '',
@@ -35,20 +45,29 @@ function SignUp() {
     function register(){
         user.birth_date = new Date(user.birth_date)
 
-        getApiData({
-            type: 'signUp',
-            method: 'POST',
-            args: user
-        }).then(response => response.json())
-        .then( data => {
-            sessionStorage.setItem('bankApiToken', data.data.jwt);
+        if(user.password != otherPass){
+            setErrorMsg({ title: "Error en los campos", body: "Las contraseñas no coinciden", color: '#dc3545', isActive: true });
+            toggle();
+        } else {       
+            getApiData({
+                type: 'signUp',
+                method: 'POST',
+                args: user
+            }).then(response => response.json())
+            .then( data => {
+                if(data.data === null){
+                    setErrorMsg({ title: "Error en los campos", body: data.message, color: '#dc3545', isActive: true });
+                    toggle();
+                } else {
+                    sessionStorage.setItem('bankApiToken', data.data.jwt);
 
-            const updatedUser = { ...userData, display_name: data.data.first_name + " " + data.data.last_name };
-            setUserContext(updatedUser);
+                    const updatedUser = { ...userData, display_name: data.data.first_name + " " + data.data.last_name };
+                    setUserContext(updatedUser);
 
-            navigate("/");
-
-        } )
+                    navigate("/");
+                }
+            } )
+        }
 
     }
 
@@ -213,6 +232,7 @@ function SignUp() {
                     </Row>
                 </Form>
             </CardBody>
+            <InfoModal modal={modal} title={errorMsg.title} body={errorMsg.body} color={errorMsg.color} toggle={toggle} />
         </Card>
     )
 }

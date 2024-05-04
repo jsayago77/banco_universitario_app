@@ -51,7 +51,7 @@ function Movements() {
         argsData.page_size = INITIAL_PARAMS.page_size;
         if (multiplier != null) argsData.multiplier = multiplier;
         getApiData({
-            type: 'getMovements',
+            type: 'movements',
             method: 'GET',
             args: argsData
         }).then(response => response.json())
@@ -79,7 +79,7 @@ function Movements() {
         },
         {
             label: 'Monto',
-            renderCell: (item) => 'Bs.' + item.amount,
+            renderCell: (item) => 'Bs. ' + item.amount.toLocaleString(),
         }
     ];
 
@@ -92,7 +92,7 @@ function Movements() {
             totalMovements: 0
         };
         getApiData({
-            type: 'getMovements',
+            type: 'movements',
             method: 'GET',
             args: argsData
         }).then(response => {

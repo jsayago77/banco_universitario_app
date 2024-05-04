@@ -53,25 +53,36 @@ export const getApiData = (action) => {
         getUser: 'v1/client/user/whoami',
         getBalance: 'v1/client/user/balance',
         getClients: 'v1/client/contact',
-        getMovements: 'v1/client/movement'
+        movements: 'v1/client/movement',
+        searchUser: 'v1/client/user/account'
     }
 
     const bankApiToken = sessionStorage.getItem('bankApiToken')
     let header = {}
     if(action.type != 'signUp' || action.type != 'signIn' ) {
         header = {
-            Authorization: `Bearer ${bankApiToken}`
+            Authorization: `Bearer ${bankApiToken}`,
+            'Accept-Language': 'es'
+        }
+    } else if(action.type == 'signIn'){
+        header = {
+            'Accept-Language': 'es'
         }
     }
+        
 
     let url = '';
     let option = {
         headers: header, 
         method: action.method
     }
-    if(action.method == 'GET') {
+    if(action.method == 'GET' && action.type != 'searchUser') {
         url = 'http://localhost:3000' + '/' + endpoints[action.type] + '?' + ( new URLSearchParams( action.args ) ).toString();
-    } else {
+    } 
+    else if(action.type == 'searchUser') {
+        url = 'http://localhost:3000' + '/' + endpoints[action.type] + '/' + action.args[0];
+    }
+    else {
         url = 'http://localhost:3000' + '/' + endpoints[action.type]
         option.body = JSON.stringify(action.args)
     }

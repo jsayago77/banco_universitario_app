@@ -1,26 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-function InfoModal({title, body, options, color, isActive}) {
-    const [modal, setModal] = useState(true);
-
-    const toggle = () => setModal(!modal);
-
-    useEffect(() => {
-        if( isActive == true ) setModal(true);
-        else {
-            setModal(false);
-            isActive = false;
-        };
-        return () => {
-        };
-    }, [isActive]);
-    
+function InfoModal({title, body, options, color, toggle, modal}) {    
 
     return (
 
         <Modal isOpen={modal} toggle={toggle} style={{backgroundColor: color}}>
-            <ModalHeader toggle={toggle}>Error</ModalHeader>
+            <ModalHeader>{title}</ModalHeader>
             <ModalBody>
                 { body }
             </ModalBody>

@@ -21,6 +21,9 @@ function SignIn() {
         password: ''
     });
 
+    const [modal, setModal] = useState(false);
+    const toggle = () => setModal(!modal);
+
     const { userData, setUserContext } = useContext(UserContext);
     const [errorMsg, setErrorMsg] = useState({
         title: '',
@@ -39,8 +42,8 @@ function SignIn() {
         }).then(response => response.json())
         .then( data => {
             if(data.data === null){
-                // setErrorMsg({ title: "Error en los campos", body: data.message, color: '#dc3545', isActive: true });
-
+                setErrorMsg({ title: "Error en los campos", body: data.message, color: '#dc3545', isActive: true });
+                toggle();
             } else {
                 sessionStorage.setItem('bankApiToken', data.data.jwt);
 
@@ -104,7 +107,7 @@ function SignIn() {
                     </Row>
                 </Form>
             </CardBody>
-            {/* <InfoModal title={errorMsg.title} body={errorMsg.body} color={errorMsg.color} isActive={errorMsg.isActive} /> */}
+            <InfoModal modal={modal} title={errorMsg.title} body={errorMsg.body} color={errorMsg.color} toggle={toggle} />
         </Card>
     )
 }

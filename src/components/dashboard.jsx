@@ -82,7 +82,7 @@ function Dashboard() {
         })
 
         getApiData({
-            type: 'getMovements',
+            type: 'movements',
             method: 'GET',
             args: {
             }
@@ -98,8 +98,13 @@ function Dashboard() {
             console.log(data)
             const updatedUser = { ...userData, movements: data.data };
             setUserContext(updatedUser);
+
+            let transfers = data.data;
+            transfers.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            const ultimasTransacciones = transfers.slice(0, 10);
             setTransferencias(data.data);
-            setDataTable({ totalPages: movData.totalPages, nodes: data.data.slice(0, 10) })
+            setDataTable({ totalPages: movData.totalPages, nodes: transfers.slice(0, 10) })
         })
 
         getApiData({
@@ -130,7 +135,7 @@ function Dashboard() {
 
     function onPaginationChange(action, state) {
         getApiData({
-            type: 'getMovements',
+            type: 'movements',
             method: 'GET',
             args: {
                 page: state.page + 1,
@@ -158,7 +163,7 @@ function Dashboard() {
         },
         {
             label: 'Monto',
-            renderCell: (item) => item.amount,
+            renderCell: (item) => 'Bs. ' + item.amount.toLocaleString(),
         },
         // {
         //     label: 'Opciones',
@@ -219,7 +224,7 @@ function Dashboard() {
                     </Col>
                     <Col>
                         <Row>Saldo actual</Row>
-                        <Row className='fs-3'>{balance}</Row>
+                        <Row className='fs-3'>{balance.toLocaleString()}</Row>
                     </Col>
                 </Col>
                 <Col className='d-flex'>
@@ -228,7 +233,7 @@ function Dashboard() {
                     </Col>
                     <Col>
                         <Row>Contactos</Row>
-                        <Row className='fs-3'>{contactos.length}</Row>
+                        <Row className='fs-3'>{contactos ? contactos.length : 0}</Row>
                     </Col>
                 </Col>
                 <Col className='d-flex'>
@@ -249,7 +254,7 @@ function Dashboard() {
             <Row className='app-section'>
                 <Row><h4>Últimas Transferencias</h4></Row>
                 <CompactTable columns={COLUMNS} data={dataTable} theme={theme} pagination={pagination} />
-                <br />
+                {/* <br />
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span>Mostrando { pagination.state.page } de {movData.totalMovements} transferencias </span>
 
@@ -271,7 +276,7 @@ function Dashboard() {
                             </Button>
                         ))}
                     </span>
-                </div>
+                </div> */}
             </Row>
         </Row>
     )
