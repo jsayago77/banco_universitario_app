@@ -6,6 +6,9 @@ import AppContainer from "../pages/appContainer";
 import Dashboard from "../components/dashboard";
 import Movements from "../components/movements";
 import NewMovement from "../components/newMovement";
+import Contacts from "../components/contacts";
+import NewContact from "../components/newContact";
+import EditContact from "../components/editContact";
 import Sign from "../pages/sign";
 import AppSection from "../components/appSection";
 
@@ -48,6 +51,9 @@ export default function Routers() {
                     <Route index element={<Dashboard />} />
                     <Route path="movements" element={<Movements />} />
                     <Route path="new-movement" element={<NewMovement />} />
+                    <Route path="contacts" element={<Contacts/>} />
+                    <Route path="new-contact" element={<NewContact/>} />
+                    <Route path="edit-contact" element={<EditContact/>} />
                 </Route>
                 <Route path="/enter" element={<Sign />} >
                     <Route path="login" element={<SignIn />} />
