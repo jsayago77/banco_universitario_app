@@ -61,6 +61,14 @@ html, body {
   }
 }
 
+.app-btn-outline {
+  border-radius: 14em !important;
+  padding: .7em 2.3em !important;
+  width: fit-content !important;
+  border-color: #085F63 !important;
+  color: #085F63 !important;
+}
+
 .sign-has-account {
   justify-content: center;
   

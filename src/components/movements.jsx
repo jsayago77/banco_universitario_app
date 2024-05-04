@@ -7,6 +7,7 @@ import { usePagination } from "@table-library/react-table-library/pagination";
 import { getApiData } from '../providers/bankApiProvider';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import moment from 'moment';
 import {
     Row,
     Col,
@@ -25,12 +26,13 @@ function Movements() {
         page_size: 10
     };
 
+    const [multiplier, setMultiplier] = useState(null);
     const [transferencias, setTransferencias] = useState([]);
-    const [movData, SetMovData] = useState({});
     const theme = useTheme(getTheme());
     const [dataTable, setDataTable] = useState({
         nodes: [],
         totalPages: 0,
+        totalMovements: 0
     });
 
     const pagination = usePagination(dataTable, {
@@ -44,13 +46,14 @@ function Movements() {
     });
 
     function onPaginationChange(action, state) {
+        let argsData = {};
+        argsData.page = state.page + 1;
+        argsData.page_size = INITIAL_PARAMS.page_size;
+        if (multiplier != null) argsData.multiplier = multiplier;
         getApiData({
             type: 'getMovements',
             method: 'GET',
-            args: {
-                page: state.page + 1,
-                page_size: INITIAL_PARAMS.page_size
-            }
+            args: argsData
         }).then(response => response.json())
         .then(data => {
             setDataTable({ ...dataTable, nodes: data.data })
@@ -68,7 +71,7 @@ function Movements() {
         },
         {
             label: 'Fecha',
-            renderCell: (item) => item.date,
+            renderCell: (item) => moment(item.created_at).format('YYYY-MM-DD HH:mm:ss'),
         },
         {
             label: 'Descripcion',
@@ -76,46 +79,59 @@ function Movements() {
         },
         {
             label: 'Monto',
-            renderCell: (item) => item.amount,
+            renderCell: (item) => 'Bs.' + item.amount,
         }
     ];
 
     useEffect(() => {
+        let argsData = {};
+        if (multiplier != null) argsData.multiplier = multiplier
+
+        let movData = {
+            totalPages: 0,
+            totalMovements: 0
+        };
         getApiData({
             type: 'getMovements',
             method: 'GET',
-            args: {
-            }
+            args: argsData
         }).then(response => {
-            SetMovData({
-                totalPages: response.headers.get('X-Pagination-Page-Count'),
-                totalMovements: response.headers.get('X-Pagination-Total-Count')
-            })
+            movData.totalPages = response.headers.get('X-Pagination-Page-Count')
+            movData.totalMovements = response.headers.get('X-Pagination-Total-Count')
             return response.json();
         })
         .then(data => {
             console.log(movData)
-            console.log(data)
-            const updatedUser = { ...userData, movements: data.data };
-            setUserContext(updatedUser);
             setTransferencias(data.data);
-            setDataTable({ totalPages: movData.totalPages, nodes: data.data.slice(0, 10) })
+            setDataTable({ 
+                totalPages: movData.totalPages ? parseInt(movData.totalPages) : 0,
+                totalMovements: movData.totalMovements ? parseInt(movData.totalMovements) : 0,
+                nodes: data.data.slice(0, 10) 
+            })
         })
-    }, []);
+    }, [getApiData, multiplier]);
+
+    function getDataMultiplier(type){
+        setMultiplier(type);
+    }
 
     return (
         <Row className='p-4'>
-            <Row className="flex-row justify-content-end">
-                <UncontrolledDropdown>
-                    <DropdownToggle caret className='app-btn'>
-                        Todos
+            <Row className="flex-row justify-content-end my-3">
+                <UncontrolledDropdown className='mx-5' style={{display:'contents'}}>
+                    <DropdownToggle caret className='app-btn-outline mx-3' style={{backgroundColor:'inherit'}}>
+                        Obtener
                     </DropdownToggle>
-                    <DropdownMenu>
-                        <DropdownItem>
+                    <DropdownMenu className='rounded-4'>
+                        <DropdownItem onClick={() => getDataMultiplier(null) }>
+                            Todos
+                        </DropdownItem>
+                        <DropdownItem divider />
+                        <DropdownItem onClick={() => getDataMultiplier(1) }>
                             Creditos
                         </DropdownItem>
                         <DropdownItem divider />
-                        <DropdownItem>
+                        <DropdownItem onClick={() => getDataMultiplier(-1) }>
                             Debitos
                         </DropdownItem>
                     </DropdownMenu>
@@ -128,8 +144,8 @@ function Movements() {
                 <CompactTable columns={COLUMNS} data={dataTable} theme={theme} pagination={pagination} />
                 <br />
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span>Mostrando { pagination.state.page } de {movData.totalMovements} transferencias </span>
-
+                    <span>Mostrando { pagination.state.page * INITIAL_PARAMS.page_size} de {dataTable.totalMovements} transferencias </span>
+                    <br />
                     <span>
                         Paginas:{" "}
                         {Array(dataTable.totalPages).fill().map((_, index) => (

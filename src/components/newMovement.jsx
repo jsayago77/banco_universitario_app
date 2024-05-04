@@ -1,130 +1,167 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { CompactTable } from '@table-library/react-table-library/compact';
-import { useTheme } from '@table-library/react-table-library/theme';
-import { getTheme } from '@table-library/react-table-library/baseline';
-import { usePagination } from "@table-library/react-table-library/pagination";
 import { getApiData } from '../providers/bankApiProvider';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
     Row,
     Col,
+    Card,
+    CardHeader,
+    CardBody,
     Button,
-    ButtonGroup,
-    DropdownMenu,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownItem
+    Form,
+    FormGroup,
+    Label,
+    Input,
 } from 'reactstrap';
 
 function NewMovement() {
 
-    const INITIAL_PARAMS = {
-        page: 1,
-        page_size: 10
-    };
-
-    const theme = useTheme(getTheme());
-    const [dataTable, setDataTable] = useState({
-        nodes: [],
-        totalPages: 0,
+    const [balance, setBalance] = useState(0);
+    const [movement, setMovement] = useState({
+        amount: 0,
+        description: '',
+        account_number: ''
     });
 
-    const pagination = usePagination(dataTable, {
-        state: {
-            page: INITIAL_PARAMS.page,
-            size: INITIAL_PARAMS.page_size,
-        },
-        onChange: onPaginationChange,
-    }, {
-        isServer: true,
+    const [contacts, setContacts] = useState({
+        account_number: '',
+        cedula: '',
     });
 
-    function onPaginationChange(action, state) {
-        getApiData({
-            type: 'getMovements',
-            method: 'GET',
-            args: {
-                page: state.page + 1,
-                page_size: INITIAL_PARAMS.page_size
-            }
-        }).then(response => response.json())
-        .then(data => {
-            setDataTable({ ...dataTable, nodes: data.data })
-        })
-    }
-
-    const COLUMNS = [
-        {
-            label: 'Cuenta',
-            renderCell: (item) => item.account_number,
-        },
-        {
-            label: 'ID',
-            renderCell: (item) => item.id,
-        },
-        {
-            label: 'Fecha',
-            renderCell: (item) => item.date,
-        },
-        {
-            label: 'Descripcion',
-            renderCell: (item) => item.description,
-        },
-        {
-            label: 'Monto',
-            renderCell: (item) => item.amount,
-        }
-    ];
+    const [contact, setContact] = useState({
+        account_number: '',
+        cedula: '',
+    });
 
     useEffect(() => {
         getApiData({
-            type: 'getMovements',
+            type: 'getBalance',
+            method: 'GET',
+        }).then(response => response.json())
+        .then(data => {
+            setBalance(data.data.balance)
+        })
+
+        getApiData({
+            type: 'getClients',
             method: 'GET',
             args: {
+                page: 1,
+                page_size: 20
             }
-        }).then(response => {
-            SetMovData({
-                totalPages: response.headers.get('X-Pagination-Page-Count'),
-                totalMovements: response.headers.get('X-Pagination-Total-Count')
-            })
-            return response.json();
-        })
+        }).then(response => response.json())
         .then(data => {
-            console.log(movData)
-            console.log(data)
-            const updatedUser = { ...userData, movements: data.data };
-            setUserContext(updatedUser);
-            setTransferencias(data.data);
-            setDataTable({ totalPages: movData.totalPages, nodes: data.data.slice(0, 10) })
+            console.log(data.data)
+            setContacts(data.data);
         })
     }, []);
 
+    function createMovement() {
+        getApiData({
+            type: 'getBalance',
+            method: 'POST',
+            args: movement
+        }).then(response => response.json())
+        .then(data => {
+
+        })
+    }
+
     return (
         <Row className='p-4'>
-            <Row className="flex-row justify-content-end">
-                <UncontrolledDropdown>
-                    <DropdownToggle caret className='app-btn'>
-                        Todos
-                    </DropdownToggle>
-                    <DropdownMenu>
-                        <DropdownItem>
-                            Creditos
-                        </DropdownItem>
-                        <DropdownItem divider />
-                        <DropdownItem>
-                            Debitos
-                        </DropdownItem>
-                    </DropdownMenu>
-                </UncontrolledDropdown>
-                <Link className=' btn app-btn'>
-                    <FontAwesomeIcon icon={faPlus} size='lg' /> Nueva
-                </Link>
-            </Row>
-            <Row className='app-section'>
-                <CompactTable columns={COLUMNS} data={dataTable} theme={theme} pagination={pagination} />
-            </Row>
+            <Card className='mb-5 p-0 rounded-4'>
+                <CardHeader className='sign-card-header rounded-4 rounded-bottom-0'>
+                    Nueva Transferencia
+                </CardHeader>
+                <CardBody className='px-5'>
+                    <Form>
+                        <Row className='mb-5'>
+                            <Col>
+                                <h3 style={{ color: "#085F63" }}>Saldo Actual</h3>
+                                <h3 className='my-2'>Bs {balance}</h3>
+                                <FormGroup>
+                                    <Label for="amount">
+                                        Monto *
+                                    </Label>
+                                    <Input
+                                        id="amount"
+                                        name="mov_amount"
+                                        placeholder="0.00"
+                                        type="number"
+                                        onChange={(e) => setMovement({ ...movement, amount: e.target.value })}
+                                        value={movement.amount}
+                                        invalid={(movement.amount == '') ? true : false}
+                                    />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="description">
+                                        Descripción *
+                                    </Label>
+                                    <Input
+                                        id="description"
+                                        name="mov_description"
+                                        placeholder="Descripcion"
+                                        type="text"
+                                        onChange={(e) => setMovement({ ...movement, description: e.target.value })}
+                                        value={movement.description}
+                                        invalid={(movement.description == '') ? true : false}
+                                    />
+                                </FormGroup>
+                            </Col>
+                            <Col>
+                                <FormGroup>
+                                    <Label for="contact">
+                                        Contacto *
+                                    </Label>
+                                    <Input
+                                        id="contact"
+                                        name="mov_contact"
+                                        placeholder="Buscar contacto"
+                                        type="select"
+                                        onChange={(e) => setMovement({ ...movement, account_number: e.target.value })}
+                                        value={movement.account_number}
+                                        invalid={(movement.account_number == '') ? true : false}
+                                    />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="contact-cedula">
+                                        Cedula de Identidad
+                                    </Label>
+                                    <Input
+                                        id="contact-cedula"
+                                        name="contact_cedula"
+                                        placeholder=""
+                                        type="text"
+                                        onChange={(e) => setContact({ ...contact, cedula: e.target.value })}
+                                        value={contact.cedula}
+                                        disabled readonly
+                                    />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="contact-account">
+                                        N° de Cuenta
+                                    </Label>
+                                    <Input
+                                        id="contact-account"
+                                        name="contact_account"
+                                        placeholder=""
+                                        type="text"
+                                        onChange={(e) => setContact({ ...contact, account_number: e.target.value })}
+                                        value={contact.account_number}
+                                        invalid={(contact.account_number == '') ? true : false}
+                                    />
+                                </FormGroup>
+                            </Col>
+                        </Row>
+                        <Row className='sign-register-btn justify-content-end '>
+                            <Link className='btn app-btn-outline mx-2' to='/movements'>
+                                Cancelar
+                            </Link>
+                            <Button onClick={createMovement}>Pagar</Button>
+                        </Row>
+                    </Form>
+                </CardBody>
+            </Card>
         </Row>
     )
 }
