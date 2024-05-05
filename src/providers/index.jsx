@@ -53,7 +53,8 @@ export default function Routers() {
                     <Route path="new-movement" element={<NewMovement />} />
                     <Route path="contacts" element={<Contacts/>} />
                     <Route path="new-contact" element={<NewContact/>} />
-                    <Route path="edit-contact" element={<EditContact/>} />
+                    <Route path="new-contact/:contactId" element={<NewContact/>} />
+                    <Route path="edit-contact/:contactId" element={<EditContact/>} />
                 </Route>
                 <Route path="/enter" element={<Sign />} >
                     <Route path="login" element={<SignIn />} />

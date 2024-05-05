@@ -79,17 +79,19 @@ function NewMovement() {
             method: 'POST',
             args: movement
         }).then(response => response.json())
-        .then(data => {
-            console.log(data)
-            if(data.data === null){
-                setErrorMsg({ title: "Error en los campos", body: data.message, color: '#dc3545', isActive: true });
-                toggle();
-            } else {
-                setTimeout(function(){
-                    navigate("/movements");
-                }, 5000)
-            }
-        })
+            .then(data => {
+                console.log(data)
+                if (data.data === null) {
+                    setErrorMsg({ title: "Error en los campos", body: data.message, color: '#dc3545', isActive: true });
+                    toggle();
+                } else {
+                    setErrorMsg({ title: "Transferencia realizada", body: data.message, color: '#dc3545', isActive: true });
+                    toggle();
+                    setTimeout(function () {
+                        navigate("/movements");
+                    }, 3000)
+                }
+            })
     }
 
     function searchUser() {
@@ -99,7 +101,7 @@ function NewMovement() {
             args: [userAccount]
         }).then(response => response.json())
             .then(data => {
-                if(data.data === null){
+                if (data.data === null) {
                     setErrorMsg({ title: "No se encontro usuario", body: data.message, color: '#dc3545', isActive: true });
                     toggle();
                 } else {
@@ -164,7 +166,7 @@ function NewMovement() {
                                                 id="select-user-1"
                                                 onChange={(e) => {
                                                     setUserAccount('');
-                                                    setContact({cedula:'', account_number:''});
+                                                    setContact({ cedula: '', account_number: '' });
                                                     setChecked(e.target.value);
                                                 }}
                                                 checked={checked == 'contact'}
@@ -181,7 +183,7 @@ function NewMovement() {
                                                 id="select-user-2"
                                                 onChange={(e) => {
                                                     setUserAccount('');
-                                                    setContact({cedula:'', account_number:''});
+                                                    setContact({ cedula: '', account_number: '' });
                                                     setChecked(e.target.value);
                                                 }}
                                                 checked={checked == 'user'}
@@ -203,15 +205,22 @@ function NewMovement() {
                                             name="mov_contact"
                                             placeholder="Buscar contacto"
                                             type="select"
-                                            onChange={(e) => setMovement({ ...movement, account_number: e.target.value })}
-                                            value={movement.account_number}
+                                            onChange={(e) => {
+                                                const account_number = e.target.value;
+                                                if (account_number != -1) {
+                                                    setUserAccount(account_number);
+                                                    searchUser();
+                                                }
+                                            }}
                                         >
+                                            <option key={0} value={-1}>
+                                                seleccione...
+                                            </option>
                                             {contacts.map((option) => (
-                                                <option key={option.account_number} value={option.account_number}>
+                                                <option key={option.document_number} value={option.account_number}>
                                                     {option.alias}
                                                 </option>
                                             ))}
-
                                         </Input>
                                     </FormGroup>
                                 }

@@ -54,7 +54,7 @@ html, body {
   padding: 1em 0;
 
   button {
-    background-color: #085F63 !important;
+    background-color: #085F63;
     padding: .7em 2.3em;
     border-radius: 14em;
     width: fit-content;
@@ -67,6 +67,14 @@ html, body {
   width: fit-content !important;
   border-color: #085F63 !important;
   color: #085F63 !important;
+}
+
+.app-btn-red {
+  border-radius: 14em !important;
+  padding: .7em 2.3em !important;
+  width: fit-content !important;
+  border-color: #FF4550 !important;
+  background-color: #FF4550 !important;
 }
 
 .sign-has-account {

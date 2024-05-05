@@ -54,7 +54,8 @@ export const getApiData = (action) => {
         getBalance: 'v1/client/user/balance',
         getClients: 'v1/client/contact',
         movements: 'v1/client/movement',
-        searchUser: 'v1/client/user/account'
+        searchUser: 'v1/client/user/account',
+        searchClient: 'v1/client/contact'
     }
 
     const bankApiToken = sessionStorage.getItem('bankApiToken')
@@ -70,23 +71,26 @@ export const getApiData = (action) => {
         }
     }
         
-
+    
     let url = '';
     let option = {
         headers: header, 
         method: action.method
     }
-    if(action.method == 'GET' && action.type != 'searchUser') {
+    if(action.method == 'GET' && action.type != 'searchUser' && action.type != 'searchClient') {
         url = 'http://localhost:3000' + '/' + endpoints[action.type] + '?' + ( new URLSearchParams( action.args ) ).toString();
-    } 
-    else if(action.type == 'searchUser') {
-        url = 'http://localhost:3000' + '/' + endpoints[action.type] + '/' + action.args[0];
     }
+    else if(action.method == 'PATCH' && action.type == 'searchClient') {
+        url = 'http://localhost:3000' + '/' + endpoints[action.type] + '/' + action.args[0];
+        option.body = JSON.stringify(action.args[1])
+    }
+    else if(action.type == 'searchUser' || action.type == 'searchClient') {
+        url = 'http://localhost:3000' + '/' + endpoints[action.type] + '/' + action.args[0];
+    } 
     else {
         url = 'http://localhost:3000' + '/' + endpoints[action.type]
         option.body = JSON.stringify(action.args)
     }
-
     //return makeConsulta(endpoints[action.type], bankApiConn, action.method, action.args);
     return fetch(url, option)
         .then(response => response)

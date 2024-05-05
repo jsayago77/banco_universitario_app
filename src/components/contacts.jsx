@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { faCircleUser, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCircleUser, faPlus, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { getApiData } from '../providers/bankApiProvider';
 import { InputGroup, Input } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ import {
     UncontrolledDropdown,
     DropdownToggle,
     DropdownItem,
-    Card, CardBody, CardTitle, CardText,
+    Card, CardBody, CardTitle, CardText, CardHeader
 } from 'reactstrap';
 
 function Contacts() {
@@ -46,7 +46,7 @@ function Contacts() {
                 </Col>
             </Row>
             <Row className="flex-row justify-content-end my-3">
-                <UncontrolledDropdown className='mx-5' style={{ display: 'contents' }}>
+                {/* <UncontrolledDropdown className='mx-5' style={{ display: 'contents' }}>
                     <DropdownToggle caret className='app-btn-outline mx-3' style={{ backgroundColor: 'inherit' }}>
                         Ultimos
                     </DropdownToggle>
@@ -63,7 +63,7 @@ function Contacts() {
                             Banco
                         </DropdownItem>
                     </DropdownMenu>
-                </UncontrolledDropdown>
+                </UncontrolledDropdown> */}
                 <Link className='btn app-btn' to='/new-contact'>
                     <FontAwesomeIcon icon={faPlus} size='lg' /> Nuevo
                 </Link>
@@ -71,6 +71,27 @@ function Contacts() {
             {contacts.map(contact => (
                 <Col className='d-flex' xl='3' md='4' sm='6' xs='12' key={contact.account_number}>
                     <Card className='mb-3 p-2 rounded-4' style={{ width: '18rem' }}>
+                        <Row className='justify-content-end px-2'>
+                            <UncontrolledDropdown className='mx-5' style={{ display: 'contents' }}>
+                                <DropdownToggle className='' style={{ backgroundColor: 'inherit', color: '#000000', border: '0' }}>
+                                    <FontAwesomeIcon icon={faEllipsis} size="lg" />
+                                </DropdownToggle>
+                                <DropdownMenu className='rounded-4'>
+                                    <Link to={"/edit-contact/" + contact.id}>
+                                        <DropdownItem>
+                                            Ver
+                                        </DropdownItem>
+                                    </Link>
+                                    <DropdownItem divider />
+                                    <Link to={"/new-contact/" + contact.id}>
+                                        <DropdownItem>
+                                            Actualizar
+                                        </DropdownItem>
+                                    </Link>
+                                </DropdownMenu>
+                            </UncontrolledDropdown>
+
+                        </Row>
                         <FontAwesomeIcon icon={faCircleUser} size='4x' color='#49BEB7' className="text-center pt-3" />
                         <CardBody className="text-center">
                             <CardTitle>{contact.alias}</CardTitle>
