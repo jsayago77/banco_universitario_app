@@ -55,7 +55,8 @@ export const getApiData = (action) => {
         getClients: 'v1/client/contact',
         movements: 'v1/client/movement',
         searchUser: 'v1/client/user/account',
-        searchClient: 'v1/client/contact'
+        searchClient: 'v1/client/contact',
+        changePassword: '/v1/client/user/password'
     }
 
     const bankApiToken = sessionStorage.getItem('bankApiToken')

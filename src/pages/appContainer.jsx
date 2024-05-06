@@ -35,10 +35,10 @@ function AppContainer() {
             type: 'getUser',
             method: 'GET',
         }).then(response => response.json())
-        .then( data => {
-            const updatedUser = { ...userData, display_name: data.data.first_name + " " + data.data.last_name };
-            setUserContext(updatedUser);
-        } )
+            .then(data => {
+                const updatedUser = { ...userData, display_name: data.data.first_name + " " + data.data.last_name };
+                setUserContext(updatedUser);
+            })
 
         return () => {
         };
@@ -51,42 +51,44 @@ function AppContainer() {
 
     return (
         <Container fluid className=''>
-            <Row>
-                <Col className='app-navbar' xs="2">
-                    <Row className='app-logo'>
-                        <img src={logo} alt="Banco Universitario" />
-                    </Row>
-                    <Row className='py-2 ps-4 flex-fill'>
-                        <Nav vertical pills className='app-navitems'>
-                            <NavItem>
-                                <NavLink className={'nav-link'} active to="/">
-                                    <FontAwesomeIcon icon={faHouse} /> Inicio
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink className={'nav-link'} to="movements">
-                                    <FontAwesomeIcon icon={faMoneyBillTransfer} /> Transferencias
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink className={'nav-link'} to="contacts">
-                                    <FontAwesomeIcon icon={faUserTie} /> Contactos
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink className={'nav-link'} to="profile">
-                                    <FontAwesomeIcon icon={faUser} />    Perfil
-                                </NavLink>
-                            </NavItem>
-                        </Nav>
-                    </Row>
-                    <Row className='text-white'>
-                        <Button className='app-logout' onClick={ logout }><FontAwesomeIcon icon={faArrowLeftLong} /> Salir</Button>
-                        <p className='app-copyright'>@2024 Banco Universitario</p>
-                    </Row>
+            <Row className='position-relative'>
+                <Col className='p-0' xs="2">
+                    <div className='app-navbar'>
+                        <Row className='app-logo'>
+                            <img src={logo} alt="Banco Universitario" />
+                        </Row>
+                        <Row className='py-2 ps-4 flex-fill'>
+                            <Nav vertical pills className='app-navitems'>
+                                <NavItem>
+                                    <NavLink className={'nav-link'} active to="/">
+                                        <FontAwesomeIcon icon={faHouse} /> Inicio
+                                    </NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink className={'nav-link'} to="movements">
+                                        <FontAwesomeIcon icon={faMoneyBillTransfer} /> Transferencias
+                                    </NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink className={'nav-link'} to="contacts">
+                                        <FontAwesomeIcon icon={faUserTie} /> Contactos
+                                    </NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink className={'nav-link'} to="profile">
+                                        <FontAwesomeIcon icon={faUser} />    Perfil
+                                    </NavLink>
+                                </NavItem>
+                            </Nav>
+                        </Row>
+                        <Row className='text-white'>
+                            <Button className='app-logout' onClick={logout}><FontAwesomeIcon icon={faArrowLeftLong} /> Salir</Button>
+                            <p className='app-copyright'>@2024 Banco Universitario</p>
+                        </Row>
+                    </div>
                 </Col>
                 <Col>
-                    <Header pageName='Inicio' user={{ name: userData.display_name }} />
+                    <Header pageName={userData.page_name} user={{ name: userData.display_name }} />
                     <Outlet />
                 </Col>
             </Row>

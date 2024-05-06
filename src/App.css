@@ -58,6 +58,7 @@ html, body {
     padding: .7em 2.3em;
     border-radius: 14em;
     width: fit-content;
+    border-color: #085F63;
   }
 }
 
@@ -67,6 +68,7 @@ html, body {
   width: fit-content !important;
   border-color: #085F63 !important;
   color: #085F63 !important;
+  background-color: #ffffff !important;
 }
 
 .app-btn-red {
@@ -124,6 +126,9 @@ html, body {
   padding: 0 !important;
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  width: inherit;
+  position: fixed;
 }
 
 .app-navitems {

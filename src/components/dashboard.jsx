@@ -69,6 +69,10 @@ function Dashboard() {
     }
 
     useEffect(() => {
+        setUserContext({ ...userData, page_name: "Inicio" });
+    }, [userData])
+    
+    useEffect(() => {
         getApiData({
             type: 'getBalance',
             method: 'GET',
@@ -120,7 +124,6 @@ function Dashboard() {
             setUserContext(updatedUser);
             setContactos(data.data);
         })
-
     }, []);
 
     const pagination = usePagination(dataTable, {

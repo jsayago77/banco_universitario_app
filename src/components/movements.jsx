@@ -7,6 +7,7 @@ import { usePagination } from "@table-library/react-table-library/pagination";
 import { getApiData } from '../providers/bankApiProvider';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { UserContext } from '../providers/userContext';
 import moment from 'moment';
 import {
     Row,
@@ -25,6 +26,7 @@ function Movements() {
         page: 1,
         page_size: 10
     };
+    const { userData, setUserContext } = useContext(UserContext);
 
     const [multiplier, setMultiplier] = useState(null);
     const [transferencias, setTransferencias] = useState([]);
@@ -84,6 +86,7 @@ function Movements() {
     ];
 
     useEffect(() => {
+        setUserContext({ ...userData, page_name: "Transferencias" });
         let argsData = {};
         if (multiplier != null) argsData.multiplier = multiplier
 

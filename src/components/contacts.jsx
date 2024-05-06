@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { UserContext } from '../providers/userContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faCircleUser, faPlus, faEllipsis } from '@fortawesome/free-solid-svg-icons';
@@ -20,7 +21,11 @@ import {
 function Contacts() {
     const [contacts, setContacts] = useState([]);
 
+    const { userData, setUserContext } = useContext(UserContext);
+
     useEffect(() => {
+        setUserContext({ ...userData, page_name: "Contactos" });
+
         getApiData({
             type: 'getClients',
             method: 'GET',
@@ -34,7 +39,7 @@ function Contacts() {
     return (
         <Row className='p-4'>
             <Row className="justify-content-start">
-                <Col xs="auto">
+                {/* <Col xs="auto">
                     <InputGroup className="rounded-pill border" style={{ borderColor: '#49BEB7' }}>
                         <div className="input-group-prepend">
                             <span className="input-group-text bg-transparent border-0" style={{ color: '#49BEB7' }}>
@@ -43,7 +48,7 @@ function Contacts() {
                         </div>
                         <Input placeholder="Buscar" className="rounded-pill border-0 bg-transparent" style={{ color: '#49BEB7', borderLeft: 'none' }} />
                     </InputGroup>
-                </Col>
+                </Col> */}
             </Row>
             <Row className="flex-row justify-content-end my-3">
                 {/* <UncontrolledDropdown className='mx-5' style={{ display: 'contents' }}>

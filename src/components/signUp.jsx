@@ -59,12 +59,23 @@ function SignUp() {
                     setErrorMsg({ title: "Error en los campos", body: data.message, color: '#dc3545', isActive: true });
                     toggle();
                 } else {
-                    sessionStorage.setItem('bankApiToken', data.data.jwt);
-
                     const updatedUser = { ...userData, display_name: data.data.first_name + " " + data.data.last_name };
                     setUserContext(updatedUser);
 
-                    navigate("/");
+                    getApiData({
+                        type: 'signIn',
+                        method: 'POST',
+                        args: {
+                            email: user.email,
+                            password: user.password
+                        }
+                    }).then(response => response.json())
+                    .then( data => {
+                            sessionStorage.setItem('bankApiToken', data.data.jwt);      
+                            navigate("/");
+                    }).catch(error => {
+                        console.error(error);
+                    });
                 }
             } )
         }

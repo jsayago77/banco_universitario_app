@@ -11,6 +11,7 @@ import NewContact from "../components/newContact";
 import EditContact from "../components/editContact";
 import Sign from "../pages/sign";
 import AppSection from "../components/appSection";
+import Profile from "../components/profile";
 
 const main_route = createHashRouter([
     {
@@ -55,6 +56,7 @@ export default function Routers() {
                     <Route path="new-contact" element={<NewContact/>} />
                     <Route path="new-contact/:contactId" element={<NewContact/>} />
                     <Route path="edit-contact/:contactId" element={<EditContact/>} />
+                    <Route path="profile" element={<Profile/>} />
                 </Route>
                 <Route path="/enter" element={<Sign />} >
                     <Route path="login" element={<SignIn />} />
