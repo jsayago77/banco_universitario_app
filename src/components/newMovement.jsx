@@ -50,6 +50,10 @@ function NewMovement() {
     });
 
     useEffect(() => {
+        if(userAccount != '') searchUser();
+    }, [userAccount])
+
+    useEffect(() => {
         getApiData({
             type: 'getBalance',
             method: 'GET',
@@ -209,7 +213,6 @@ function NewMovement() {
                                                 const account_number = e.target.value;
                                                 if (account_number != -1) {
                                                     setUserAccount(account_number);
-                                                    searchUser();
                                                 }
                                             }}
                                         >
